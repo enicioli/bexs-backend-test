@@ -4,9 +4,9 @@
   "description": "Flight Routes API",
   "scripts": {
     "start": "node src/app.js",
-    "test": "NODE_ENV=test npx mocha --timeout 10000 test/*",
-    "import": "node src/import.js",
-    "console": "node src/console.js"
+    "test": "NODE_ENV=test npx mocha test/*",
+    "console": "src/bin/console",
+    "import-default-database": "src/bin/console import-direct IATA.csv"
   },
   "keywords": [],
   "author": "Eduardo Nicioli",

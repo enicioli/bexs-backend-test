@@ -17,23 +17,29 @@ cd bexs-backend-test
 ```shell script
 sudo docker-compose up -d --build
 ```
-One container will be initialized:
+
+### One container will be initialized:
 - bexs-backend-test (REST API connected to the host port 3333)
 
 >When the container is built, some sample data is imported into the database.
-This sample data is based on this [file](/resources/IATA.csv) with more than 80.000 different route combinations between 288 airports in Brazil at random prices.
+>
+>This sample data is based on this [file](/resources/IATA.csv) with more than 80.000 different route combinations between 288 airports in Brazil at random prices.
 
-To find the best price for a route via console:
+## Console
+
+- ### Find the best price for a route via console:
 ```shell script
-sudo docker exec -it bexs-backend-test /bin/sh -c "ORIGIN=GRU DESTINATION=GIG npm run console"
+sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console search"
 ```
-This search may take a few seconds, as the [default database](/resources/IATA.csv) is very large.
+Then inform an origin (ex: GRU) and a destination (ex: GIG).
 
-To import your own .csv database file via console:
+>This search may take a few seconds, as the [default database](/resources/IATA.csv) is very large.
+
+- ### Import your own csv database file via console:
 ```shell script
-sudo docker cp /path/to/filename.csv bexs-backend-test:/usr/src/app
+sudo docker cp /path/to/filename.csv bexs-backend-test:/usr/src/app/resources
 
-sudo docker exec -it bexs-backend-test /bin/sh -c "IMPORT_FILE=filename.csv npm run import"
+sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console import"
 ```
 
 ## REST API

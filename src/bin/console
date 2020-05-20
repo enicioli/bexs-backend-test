@@ -1,0 +1,112 @@
+#!/usr/bin/env node
+
+const chalk = require('chalk')
+const rl = require('readline')
+const fs = require('fs')
+
+const StopoverModel = require('./../models/StopoverModel')
+const importFile = require('./import')
+
+const args = process.argv
+
+// usage represents the help guide
+const usage = function () {
+    const usageText = `
+  This console application helps you to find the best price for a route.
+  
+  Usage:
+    console <command>
+  
+    Commands can be:
+    search:    used to find the best stopover list for a given origin and destination
+    import:  used to import a new .csv database file
+    help:      used to print the usage guide
+  `
+
+    console.log(chalk.green(usageText))
+}
+
+function errorLog(error) {
+    const eLog = chalk.red(error)
+    console.log(eLog)
+}
+
+function prompt(question) {
+    const r = rl.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        terminal: false
+    });
+    return new Promise((resolve, error) => {
+        r.question(question, answer => {
+            r.close()
+            resolve(answer)
+        });
+    })
+}
+
+function search() {
+    const q = chalk.blue('Type in the IATA code of your origin airport:\n')
+    prompt(q).then(origin => {
+        const q = chalk.blue('Type in the IATA code of your destination airport:\n')
+        prompt(q).then(destination => {
+            async function calculate(origin, destination) {
+                const stopoverList = await StopoverModel.calculate(origin, destination)
+                if (stopoverList) {
+                    console.log(chalk.yellow('Origin:', stopoverList.origin))
+                    console.log(chalk.yellow('Destination:', stopoverList.destination))
+                    console.log(chalk.yellow('Stopovers:', stopoverList.stopovers.join('|')))
+                    console.log(chalk.yellow('Price:', stopoverList.price))
+                } else {
+                    console.log(chalk.red('Route nof found'))
+                }
+
+                process.exit(0)
+            }
+
+            calculate(origin, destination)
+        })
+    })
+    return
+}
+
+function database(file) {
+    if (file !== undefined) {
+        importFile(`./resources/${file}`)
+    } else {
+        fs.readdir('./resources', function (err, files) {
+            if (files !== undefined && files.length) {
+                let q = chalk.blue('Type in one of this filenames:\n')
+                files.forEach(file => {
+                    q += chalk.green(`\t-${file}\n`)
+                })
+    
+                prompt(q).then(file => {
+                    importFile(`./resources/${file}`)
+                })
+            } else {
+                errorLog('No files to import')
+            }
+        })
+    }
+
+    return
+}
+
+switch (args[2]) {
+    case 'help':
+        usage()
+        break
+    case 'search':
+        search()
+        break
+    case 'import':
+        database()
+        break
+    case 'import-direct':
+        database(args[3])
+        break
+    default:
+        errorLog('invalid command passed')
+        usage()
+}

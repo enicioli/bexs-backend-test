@@ -11,7 +11,7 @@ ENV NPM_CONFIG_LOGLEVEL warn
 #RUN npm ci --$NODE_ENV
 RUN npm install
 RUN npx knex migrate:latest
-RUN IMPORT_FILE='resources/IATA.csv' npm run import
+RUN npm run import-default-database
 
 EXPOSE $APP_PORT
 CMD ["pm2-runtime", "src/app.js"]
