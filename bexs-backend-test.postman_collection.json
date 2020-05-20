@@ -1,0 +1,200 @@
+{
+	"info": {
+		"_postman_id": "c0b81847-4f8a-48f2-809e-8abe5cb640a5",
+		"name": "bexs-backend-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Route",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"origin\": \"AAA\",\n\t\"destination\": \"BBB\",\n\t\"price\": 100\n}"
+				},
+				"url": {
+					"raw": "localhost:3333/route",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"route"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Route",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"price\": 10\n}"
+				},
+				"url": {
+					"raw": "localhost:3333/route/{{origin}}/{{destination}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"route",
+						"{{origin}}",
+						"{{destination}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Route",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"price\": 100\n}"
+				},
+				"url": {
+					"raw": "localhost:3333/route/{{origin}}/{{destination}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"route",
+						"{{origin}}",
+						"{{destination}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Route",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3333/route/{{origin}}/{{destination}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"route",
+						"{{origin}}",
+						"{{destination}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Route",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3333/route/{{origin}}/{{destination}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"route",
+						"{{origin}}",
+						"{{destination}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Route List (by origin)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3333/route/origin/{{origin}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"route",
+						"origin",
+						"{{origin}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Route List (by destination)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3333/route/destination/{{destination}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"route",
+						"destination",
+						"{{destination}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stopover Calculation (by origin and destination)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "localhost:3333/stopover/{{origin}}/{{destination}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"stopover",
+						"{{origin}}",
+						"{{destination}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
