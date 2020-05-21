@@ -12,8 +12,7 @@ module.exports = {
             return null
         }
 
-        calculation = new StopoverCalculation(routes)
-
+        const calculation = new StopoverCalculation(routes)
         const stopoverList = calculation.calculateBestStopoverListByPrice(origin, destination)
 
         if (stopoverList) {

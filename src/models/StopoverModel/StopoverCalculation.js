@@ -33,7 +33,7 @@ class StopoverCalculation
 
         const routes = this.getRoutesByOrigin(origin)
 
-        for (let [k, route] of Object.entries(routes)) {
+        for (const route of Object.values(routes)) {
             const list = this.newList(origin, destination)
             this.addToList(list, route)
             this.stopoverTree(list)
@@ -53,7 +53,7 @@ class StopoverCalculation
         const routes = this.getRoutesByOrigin(list.tail)
 
         const departures = []
-        for (let route of Object.values(routes)) {
+        for (const route of Object.values(routes)) {
             if (this.canAddToList(list, route)) {
                 departures.push(route)
             }
