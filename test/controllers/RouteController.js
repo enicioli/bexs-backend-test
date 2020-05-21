@@ -2,13 +2,13 @@ const fs = require('fs')
 const assert = require('assert')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
-const app = require('./../src/app')
+const app = require('./../../src/app')
 
 chai.use(chaiHttp)
 
 describe('RouteController', () => {
-    describe('post /route', () => {
-        it(`it should create a new route`, (done) => {
+    describe('#post /route', () => {
+        it('should 201', (done) => {
             chai
             .request(app)
             .post(`/route`)
@@ -20,8 +20,8 @@ describe('RouteController', () => {
         })
     })
 
-    describe('get /route/:origin/:destination', () => {
-        it(`it should retrieve a route`, (done) => {
+    describe('#get /route/:origin/:destination', () => {
+        it('should return 200', (done) => {
             const route = readFixtureJSONFile('route.json')
             chai
             .request(app)
@@ -32,16 +32,14 @@ describe('RouteController', () => {
             })
         })
     })
-})
 
-describe('StopoverController', () => {
-    context('get /stopover/:origin/:destination with invalid params', () => {
-        it(`it should return 400`, (done) => {
+    describe('#get /route/:origin/:destination nonexistent', () => {
+        it('should return 404', (done) => {
             chai
             .request(app)
-            .get(`/stopover/XXX/XXX`)
+            .get(`/route/XXX/ZZZ`)
             .end((err, res) => {
-                assert.equal(res.status, 400)
+                assert.equal(res.status, 404)
                 done()
             })
         })

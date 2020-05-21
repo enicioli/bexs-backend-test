@@ -41,6 +41,7 @@ sudo docker cp /path/to/filename.csv bexs-backend-test:/usr/src/app/resources
 
 sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console import"
 ```
+Then type your filename.csv.
 
 ## REST API
 >[This file](/bexs-backend-test.postman_collection.json) contains a [Postman](https://www.getpostman.com/) collection with examples of all the endpoints.
@@ -49,4 +50,7 @@ sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console import"
 - [Docker](https://www.docker.com/)
 - [Node.js](https://nodejs.org/)
 - [Express](https://expressjs.com/)
+- [Chalk](https://github.com/chalk/chalk)
+- [Knex](http://knexjs.org/)
 - [Mocha](https://mochajs.org/)
+- [Chai](https://www.chaijs.com/)
