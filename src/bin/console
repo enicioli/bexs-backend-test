@@ -9,7 +9,6 @@ const importFile = require('./import')
 
 const args = process.argv
 
-// usage represents the help guide
 const usage = function () {
     const usageText = `
   This console application helps you to find the best price for a route.
@@ -18,9 +17,9 @@ const usage = function () {
     console <command>
   
     Commands can be:
-    search:    used to find the best stopover list for a given origin and destination
+    search:  used to find the best stopover list for a given origin and destination
     import:  used to import a new .csv database file
-    help:      used to print the usage guide
+    help:    used to print the usage guide
   `
 
     console.log(chalk.green(usageText))
@@ -45,68 +44,86 @@ function prompt(question) {
     })
 }
 
-function search() {
-    const q = chalk.blue('Type in the IATA code of your origin airport:\n')
-    prompt(q).then(origin => {
-        const q = chalk.blue('Type in the IATA code of your destination airport:\n')
-        prompt(q).then(destination => {
-            async function calculate(origin, destination) {
-                const stopoverList = await StopoverModel.calculate(origin, destination)
-                if (stopoverList) {
-                    console.log(chalk.yellow('Origin:', stopoverList.origin))
-                    console.log(chalk.yellow('Destination:', stopoverList.destination))
-                    console.log(chalk.yellow('Stopovers:', stopoverList.stopovers.join('|')))
-                    console.log(chalk.yellow('Price:', stopoverList.price))
-                } else {
-                    console.log(chalk.red('Route nof found'))
-                }
-
-                process.exit(0)
-            }
-
-            calculate(origin, destination)
-        })
-    })
-    return
-}
-
-function database(file) {
-    if (file !== undefined) {
-        importFile(`./resources/${file}`)
-    } else {
-        fs.readdir('./resources', function (err, files) {
-            if (files !== undefined && files.length) {
-                let q = chalk.blue('Type in one of this filenames:\n')
-                files.forEach(file => {
-                    q += chalk.green(`\t-${file}\n`)
-                })
-    
-                prompt(q).then(file => {
-                    importFile(`./resources/${file}`)
-                })
-            } else {
-                errorLog('No files to import')
-            }
+async function search(origin, destination) {
+    var o = origin || null
+    var d = destination || null
+    if (!origin || !destination) {
+        const q = chalk.yellow('IATA code of your ORIGIN airport:\n')
+        await prompt(q).then(async origin => {
+            o = origin
+            const q = chalk.yellow('IATA code of your DESTINATION airport:\n')
+            await prompt(q).then(destination => {
+                d = destination
+            })
         })
     }
 
-    return
+    const stopoverList = await StopoverModel.calculate(o, d)
+    if (stopoverList) {
+        console.log(chalk.yellow('##########################################'))
+        console.log(chalk.yellow('Origin:', stopoverList.origin))
+        console.log(chalk.yellow('Destination:', stopoverList.destination))
+        console.log(chalk.yellow('Stopovers:', stopoverList.stopovers.join('|')))
+        console.log(chalk.yellow('Price:', stopoverList.price))
+        console.log(chalk.yellow('##########################################'))
+    } else {
+        errorLog('Route not found')
+    }
 }
 
-switch (args[2]) {
-    case 'help':
-        usage()
-        break
-    case 'search':
-        search()
-        break
-    case 'import':
-        database()
-        break
-    case 'import-direct':
-        database(args[3])
-        break
-    default:
-        errorLog('invalid command passed')
-        usage()
+async function importDatabase(file) {
+    var f = file || null
+    if (!file) {
+        const files = fs.readdirSync('./resources')
+        if (files.length) {
+            let q = chalk.yellow('Type in one of this filenames:\n')
+            files.forEach(file => {
+                q += chalk.green(`\t-${file}\n`)
+            })
+
+            await prompt(q).then(file => {
+                f = file
+            })
+        }
+    }
+
+    if (f) {
+        const result = await importFile(`./resources/${f}`)
+        console.log(chalk.yellow('######################'))
+        console.log(chalk.yellow('Success:', result.success))
+        console.log(chalk.yellow('Failure:', result.failure))
+        console.log(chalk.yellow('######################'))
+    } else {
+        errorLog('No files to import')
+    }
 }
+
+(async () => {
+    switch (args[2]) {
+        case 'help':
+            usage()
+            break
+        case 'search':
+            const origin = args[3] !== undefined ? args[3] : null
+            const destination = args[4] !== undefined ? args[4] : null
+            var shouldContinue = (origin && destination) ? false : true
+            do {
+                await search(origin, destination)
+                if (shouldContinue) {
+                    await prompt(chalk.green('Continue? (y/n)')).then(key => {
+                        shouldContinue = (key === 'y' || key === '')
+                    })
+                }
+            } while (shouldContinue)
+            break
+        case 'import':
+                const file = args[3] !== undefined ? args[3] : null
+                await importDatabase(file)
+            break
+        default:
+            errorLog('invalid command passed')
+            usage()
+    }
+
+    process.exit()
+})()

@@ -2,23 +2,23 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const connection = require('./../database/connection')
 
-function importFile(file) {
-    const routes = []
-    fs.createReadStream(file)
-        .pipe(csv())
-        .on('data', (row) => {
-            routes.push(row)
-        })
-        .on('end', async () => {
-            const result = await fillDatabase(routes)
-            console.log('CSV file processed')
-            console.log(result)
-            process.exit(0)
-        })
-        .on('error', () => {
-            console.log('File not processed')
-            process.exit(1)
-        })
+async function importFile(file) {
+    await Promise.all([readStream(file, routes = [])])
+    const result = await fillDatabase(routes)
+    return result
+}
+
+function readStream(file, routes) {
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(file)
+            .pipe(csv())
+            .on('data', (row) => {
+                routes.push(row)
+            })
+            .on('end', () => {
+                resolve()
+            })
+    })
 }
 
 async function fillDatabase(routes) {

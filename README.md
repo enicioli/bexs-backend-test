@@ -27,21 +27,36 @@ sudo docker-compose up -d --build
 
 ## Console
 
-- ### Find the best price for a route via console:
+### Find the best price for a route via console:
 ```shell script
 sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console search"
 ```
-Then inform an origin (ex: GRU) and a destination (ex: GIG).
+>Then, inform an origin (ex: GRU) and a destination (ex: GIG).
+
+Or just:
+```shell script
+sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console search GRU GIG"
+```
 
 >This search may take a few seconds, as the [default database](/resources/IATA.csv) is very large.
 
-- ### Import your own csv database file via console:
+### Import your own csv database file via console:
+
+- #### Upload your file to container:
 ```shell script
 sudo docker cp /path/to/filename.csv bexs-backend-test:/usr/src/app/resources
+```
 
+- #### Run import command:
+```shell script
 sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console import"
 ```
-Then type your filename.csv.
+>Then, type your filename.csv as prompted.
+
+Or just:
+```shell script
+sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console import filename.csv"
+```
 
 ## REST API
 >[This file](/bexs-backend-test.postman_collection.json) contains a [Postman](https://www.getpostman.com/) collection with examples of all the endpoints.

@@ -6,7 +6,7 @@
     "start": "node src/app.js",
     "test": "NODE_ENV=test npx mocha test/*",
     "console": "src/bin/console",
-    "import-default-database": "src/bin/console import-direct IATA.csv"
+    "import-default-database": "src/bin/console import IATA.csv"
   },
   "keywords": [],
   "author": "Eduardo Nicioli",
