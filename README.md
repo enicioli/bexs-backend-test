@@ -42,6 +42,8 @@ sudo docker exec -it bexs-backend-test /bin/sh -c "npm run console search GRU GI
 
 ### Import your own csv database file via console:
 
+> Note: Your file must have the following headings in the first line: `origin,destination,price`
+
 - #### Upload your file to container:
 ```shell script
 sudo docker cp /path/to/filename.csv bexs-backend-test:/usr/src/app/resources

@@ -15,15 +15,15 @@ module.exports = {
         const calculation = new StopoverCalculation(routes)
         const stopoverList = calculation.calculateBestStopoverListByPrice(origin, destination)
 
-        if (stopoverList) {
-            return {
-                origin: stopoverList.head,
-                destination: stopoverList.destination,
-                price: stopoverList.price,
-                stopovers: stopoverList.body
-            }
+        if (!stopoverList) {
+            return null
         }
 
-        return null
+        return {
+            origin: stopoverList.head,
+            destination: stopoverList.destination,
+            price: stopoverList.price,
+            stopovers: stopoverList.body
+        }
     }
 }

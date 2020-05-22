@@ -10,6 +10,30 @@ module.exports = {
             })
             .first()
     },
+    async create(data) {
+        return connection('route')
+            .insert(data)
+    },
+    async update(origin, destination, data) {
+        const { price } = data
+
+        return connection('route')
+            .where({
+                origin,
+                destination
+            })
+            .update({
+                price
+            })
+    },
+    async delete(origin, destination) {
+        return connection('route')
+            .where({
+                origin,
+                destination
+            })
+            .delete()
+    },
     async getByOrigin(origin) {
         return connection('route')
             .select('*')
@@ -23,39 +47,5 @@ module.exports = {
             .where({
                 destination
             })
-    },
-    async create(data) {
-        try {
-            return connection('route').insert(data)
-        } catch(e) {
-            throw e
-        }
-    },
-    async update(route, data) {
-        try {
-            const { origin, destination } = route
-            const { price } = data
-
-            return connection('route')
-                .where({
-                    origin,
-                    destination
-                })
-                .update({
-                    price
-                })
-        } catch (e) {
-            throw e
-        }
-    },
-    async delete(route) {
-        const { origin, destination } = route
-
-        return connection('route')
-            .where({
-                origin,
-                destination
-            })
-            .delete()
     }
 }

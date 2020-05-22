@@ -11,16 +11,13 @@ chai.use(chaiHttp)
 const fixtureRoute = readFixtureJSONFile('route.json')
 
 describe('RouteController', () => {
-    describe('#post /route', () => {
+    describe('#create', () => {
         before(() => {
             tracker.install()
             tracker.on('query', (query, step) => {
                 [
                     () => {
                         query.response([1])
-                    },
-                    () => {
-                        query.response(fixtureRoute)
                     }
                 ][step - 1]()
             })
@@ -40,7 +37,61 @@ describe('RouteController', () => {
         })
     })
 
-    describe('#get /route/:origin/:destination', () => {
+    describe('#update', () => {
+        context('existent route', () => {
+            before(() => {
+                tracker.install()
+                tracker.on('query', (query, step) => {
+                    [
+                        () => {
+                            query.response(1)
+                        }
+                    ][step - 1]()
+                })
+            })
+            it('should return 200', (done) => {
+                chai
+                .request(app)
+                .put(`/route/${fixtureRoute.origin}/${fixtureRoute.destination}`)
+                .send({ price: fixtureRoute.price + 1 })
+                .end((err, res) => {
+                    assert.equal(res.status, 200)
+                    done()
+                })
+            })
+            after(() => {
+                tracker.uninstall()
+            })
+        })
+
+        context('nonexistent route', () => {
+            before(() => {
+                tracker.install()
+                tracker.on('query', (query, step) => {
+                    [
+                        () => {
+                            query.response(0)
+                        }
+                    ][step - 1]()
+                })
+            })
+            it('should return 404', (done) => {
+                chai
+                .request(app)
+                .put('/route/XXX/YYY')
+                .send({ price: 1 })
+                .end((err, res) => {
+                    assert.equal(res.status, 404)
+                    done()
+                })
+            })
+            after(() => {
+                tracker.uninstall()
+            })
+        })
+    })
+
+    describe('#one', () => {
         context('existent route', () => {
             before(() => {
                 tracker.install()
@@ -92,15 +143,12 @@ describe('RouteController', () => {
         })
     })
 
-    describe('#delete /route/:origin/:destination', () => {
+    describe('#delete', () => {
         context('existent route', () => {
             before(() => {
                 tracker.install()
                 tracker.on('query', (query, step) => {
                     [
-                        () => {
-                            query.response(fixtureRoute)
-                        },
                         () => {
                             query.response(1)
                         }
@@ -127,7 +175,7 @@ describe('RouteController', () => {
                 tracker.on('query', (query, step) => {
                     [
                       () => {
-                        query.response(undefined)
+                        query.response(0)
                       }
                     ][step - 1]()
                 })
